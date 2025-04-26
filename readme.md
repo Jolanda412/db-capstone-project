@@ -203,7 +203,6 @@ You can call the procedure GetMaxQuantity.
 The prepared statement should accept one input argument, the CustomerID value, from a variable. 
 The statement should return the order id, the quantity and the order cost from the Orders table. 
 
-
 Once you create the prepared statement, you can create a variable called id and assign it value of 1. 
 
 ![image](https://github.com/user-attachments/assets/cb5cacba-a988-4203-ba51-3a0bef833253)
@@ -211,6 +210,7 @@ Once you create the prepared statement, you can create a variable called id and 
 <b>Task 3: </b>Your third and final task is to create a stored procedure called CancelOrder. Little Lemon want to use this stored procedure to delete an order record based on the user input of the order id.
 Creating this procedure will allow Little Lemon to cancel any order by specifying the order id value in the procedure parameter without typing the entire SQL delete statement.
 
+![image](https://github.com/user-attachments/assets/4d17b27f-def4-46d8-acf3-d979ca26598d)
 
 
 ![image](https://github.com/user-attachments/assets/ca1ee25c-79fe-4f4a-973d-e2273aa83d09)
@@ -218,15 +218,55 @@ Creating this procedure will allow Little Lemon to cancel any order by specifyin
 <b>Module 2: </b> Exercise: Create SQL queries to check available bookings based on user input
 
 <b>Task 1: </b> Little Lemon wants to populate the Bookings table of their database with some records of data. Your first task is to replicate the list of records in the following table by adding them to the Little Lemon booking table.
+
 ![image](https://github.com/user-attachments/assets/49460413-af13-4816-ad76-59ecd44f18f4)
 <br/>
+
 <b>Task 2: </b> For your second task, Little Lemon need you to create a stored procedure called CheckBooking to check whether a table in the restaurant is already booked. Creating this procedure helps to minimize the effort involved in repeatedly coding the same SQL statements.
 The procedure should have two input parameters in the form of booking date and table number. You can also create a variable in the procedure to check the status of each table.<br/>
+
+![image](https://github.com/user-attachments/assets/30737373-b606-46a0-ba09-b76d907e4deb)
+
 ![image](https://github.com/user-attachments/assets/8c522a3a-49ad-4453-a0ee-76d9bf61063e)
 
 <b>Task 3: </b>For your third and final task, Little Lemon need to verify a booking, and decline any reservations for tables that are already booked under another name. 
 Since integrity is not optional, Little Lemon need to ensure that every booking attempt includes these verification and decline steps. However, implementing these steps requires a stored procedure and a transaction. 
 To implement these steps, you need to create a new procedure called AddValidBooking. This procedure must use a transaction statement to perform a rollback if a customer reserves a table that’s already booked under another name.  
+
+DELIMITER $$
+
+CREATE PROCEDURE AddValidBooking (IN Booking_date DATE, IN Table_No INT)
+BEGIN
+    DECLARE id INT;
+    DECLARE existing_booking INT;
+
+    -- Start een transactie
+    START TRANSACTION;
+
+    -- Haal het hoogste BookingID op en verhoog het
+    SELECT BookingID INTO id FROM bookings ORDER BY BookingID DESC LIMIT 1;
+    SET id = id + 1;
+
+    -- Controleer of de tafel al geboekt is
+    SELECT COUNT(*) INTO existing_booking
+    FROM bookings
+    WHERE TableNumber = Table_No AND Date = Booking_date;  -- Gebruik 'Date' als kolomnaam
+
+    -- Als de tafel al geboekt is, rollback, anders voeg de boeking toe
+    IF existing_booking > 0 THEN
+        ROLLBACK;
+        SELECT CONCAT('Table ', Table_No, ' is already booked - booking cancelled') AS BookingStatus;
+    ELSE
+        -- Voeg de boeking toe
+        INSERT INTO bookings (BookingID, Date, TableNumber, CustomerID)  -- Gebruik 'Date' als kolomnaam
+        VALUES (id, Booking_date, Table_No, NULL);
+
+        COMMIT;
+        SELECT CONCAT('Booking Successful') AS BookingStatus;
+    END IF;
+END $$
+
+DELIMITER ;
 
 ![image](https://github.com/user-attachments/assets/56143bb7-b801-4a62-ae99-12dd6329a191)
 
@@ -238,6 +278,8 @@ The procedure should include four input parameters in the form of the following 
 - customer id, 
 - booking date,
 - and table number.
+
+
 
 ![image](https://github.com/user-attachments/assets/8f064f61-adab-46e9-981c-b9889e7a97dc)
 
