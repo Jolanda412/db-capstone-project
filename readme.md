@@ -198,15 +198,20 @@ Creating this procedure will allow Little Lemon to reuse the logic implemented i
 You can call the procedure GetMaxQuantity.
 
 ![image](https://github.com/user-attachments/assets/ee1e526f-03e8-4e1a-bb04-2817d407bf68)
+
 <b>Task 2: </b> In the second task, Little Lemon need you to help them to create a prepared statement called GetOrderDetail. This prepared statement will help to reduce the parsing time of queries. It will also help to secure the database from SQL injections.
 The prepared statement should accept one input argument, the CustomerID value, from a variable. 
 The statement should return the order id, the quantity and the order cost from the Orders table. 
+
+
 Once you create the prepared statement, you can create a variable called id and assign it value of 1. 
 
 ![image](https://github.com/user-attachments/assets/cb5cacba-a988-4203-ba51-3a0bef833253)
 
 <b>Task 3: </b>Your third and final task is to create a stored procedure called CancelOrder. Little Lemon want to use this stored procedure to delete an order record based on the user input of the order id.
 Creating this procedure will allow Little Lemon to cancel any order by specifying the order id value in the procedure parameter without typing the entire SQL delete statement.
+
+
 
 ![image](https://github.com/user-attachments/assets/ca1ee25c-79fe-4f4a-973d-e2273aa83d09)
 
