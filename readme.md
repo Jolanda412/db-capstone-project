@@ -192,6 +192,9 @@ Here’s some guidance around completing this task:
 
 <b>Task 1: </b> In this first task, Little Lemon need you to create a procedure that displays the maximum ordered quantity in the Orders table. 
 Creating this procedure will allow Little Lemon to reuse the logic implemented in the procedure easily without retyping the same code over again and again to check the maximum quantity. 
+![image](https://github.com/user-attachments/assets/d6cbe197-d30d-474f-88ce-d4e03d6095ac)
+
+
 You can call the procedure GetMaxQuantity.
 
 ![image](https://github.com/user-attachments/assets/ee1e526f-03e8-4e1a-bb04-2817d407bf68)
