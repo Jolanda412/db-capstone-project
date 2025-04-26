@@ -279,17 +279,64 @@ The procedure should include four input parameters in the form of the following 
 - booking date,
 - and table number.
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddBooking`(
+    IN booking_id INT,           -- Boekings-ID
+    IN customer_id INT,          -- Klant-ID
+    IN booking_date DATE,        -- Boekingsdatum
+    IN table_number INT          -- Tafelnummer
+)
+BEGIN
+    DECLARE existing_booking INT;
 
+    -- Start een transactie
+    START TRANSACTION;
+
+    -- Controleer of de tafel al geboekt is voor de opgegeven datum
+SELECT 
+    COUNT(*)
+INTO existing_booking FROM
+    bookings
+WHERE
+    TableNumber = table_number
+        AND Date = booking_date;
+
+    -- Als de tafel al geboekt is, rollback de transactie
+    IF existing_booking > 0 THEN
+        ROLLBACK;
+SELECT 
+    CONCAT('Table ',
+            table_number,
+            ' is already booked for ',
+            booking_date,
+            ' - booking cancelled') AS BookingStatus;
+    ELSE
+        -- Voeg de boeking toe aan de tabel
+        INSERT INTO bookings (BookingID, CustomerID, Date, TableNumber)
+        VALUES (booking_id, customer_id, booking_date, table_number);
+
+        -- Commit de transactie
+        COMMIT;
+SELECT 
+    CONCAT('Booking successful for Customer ',
+            customer_id,
+            ' on Table ',
+            table_number,
+            ' for date ',
+            booking_date) AS BookingStatus;
+    END IF;
+END
 
 ![image](https://github.com/user-attachments/assets/8f064f61-adab-46e9-981c-b9889e7a97dc)
 
 <b>Task 2: </b> For your second task, Little Lemon need you to create a new procedure called UpdateBooking that they can use to update existing bookings in the booking table.
 The procedure should have two input parameters in the form of booking id and booking date. You must also include an UPDATE statement inside the procedure. 
+![image](https://github.com/user-attachments/assets/1de87f34-f8ec-4c94-86da-a7e7903710ca)
 
 ![image](https://github.com/user-attachments/assets/77e68e7b-5451-48fc-9a91-d56012fc3e9a)
 
 <b>Task 3: </b> For the third and final task, Little Lemon need you to create a new procedure called CancelBooking that they can use to cancel or remove a booking.
 The procedure should have one input parameter in the form of booking id. You must also write a DELETE statement inside the procedure. 
+![image](https://github.com/user-attachments/assets/95f14717-c3e3-46cc-abea-ac6b107f0e01)
 
 ![image](https://github.com/user-attachments/assets/a1f9a474-94b2-41e2-810a-c3a8e72a32a3)
 
